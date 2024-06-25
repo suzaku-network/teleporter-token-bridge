@@ -2,7 +2,6 @@
 pragma solidity 0.8.18;
 
 import {WarpMessage} from "@avalabs/subnet-evm-contracts@1.2.0/contracts/interfaces/IWarpMessenger.sol";
-
 import {BridgeMessage, BridgeMessageType, RegisterRemoteMessage} from "../interfaces/ITokenBridge.sol";
 import {TeleporterMessage, TeleporterMessageReceipt} from "@teleporter/ITeleporterMessenger.sol";
 

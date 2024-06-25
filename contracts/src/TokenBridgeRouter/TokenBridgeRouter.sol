@@ -7,7 +7,6 @@
 pragma solidity 0.8.18;
 
 import {IWarpMessenger} from "@avalabs/subnet-evm-contracts@1.2.0/contracts/interfaces/IWarpMessenger.sol";
-
 import {WrappedNativeToken} from "../WrappedNativeToken.sol";
 import {IERC20TokenBridge} from "../interfaces/IERC20TokenBridge.sol";
 import {INativeTokenBridge} from "../interfaces/INativeTokenBridge.sol";
@@ -23,7 +22,7 @@ import "@openzeppelin/contracts@4.8.1/access/Ownable.sol";
 struct RemoteBridge {
     address bridgeAddress;
     uint256 requiredGasLimit;
-    bool isMultihop;
+    bool isMultiHop;
 }
 
 /// @custom:security-contact security@e36knots.com
@@ -53,7 +52,7 @@ contract TokenBridgeRouter is Ownable, ReentrancyGuard {
     bytes32 private immutable routerChainID;
 
     /**
-     * @notice Issued when changing the value of the relayer fee
+     * @notice Emitted when changing the value of the relayer fee
      * @param primaryRelayerFee New value of the primary relayer fee
      * @param secondaryRelayerFee New value of the secondary relayer fee
      */
@@ -63,7 +62,7 @@ contract TokenBridgeRouter is Ownable, ReentrancyGuard {
     );
 
     /**
-     * @notice Issued when registering a new bridge home instance
+     * @notice Emitted when registering a new bridge home instance
      * @param tokenAddress Address of the ERC20 token contract
      * @param bridgeAddress Address of the bridge contract
      */
@@ -73,7 +72,7 @@ contract TokenBridgeRouter is Ownable, ReentrancyGuard {
     );
 
     /**
-     * @notice Issued when registering a new bridge remote
+     * @notice Emitted when registering a new bridge remote
      * @param tokenAddress Address of the ERC20 token contract
      * @param remoteBridge Bridge remote instance and required gas limit
      * @param remoteChainID ID of the remote chain
@@ -85,13 +84,13 @@ contract TokenBridgeRouter is Ownable, ReentrancyGuard {
     );
 
     /**
-     * @notice Issued when deleting a bridge home instance
+     * @notice Emitted when deleting a bridge home instance
      * @param tokenAddress Address of the ERC20 token contract
      */
     event RemoveHomeTokenBridge(address indexed tokenAddress);
 
     /**
-     * @notice Issued when deleting a bridge remote
+     * @notice Emitted when deleting a bridge remote
      * @param tokenAddress Address of the ERC20 token contract
      * @param remoteChainID ID of the remote chain
      */
@@ -101,7 +100,7 @@ contract TokenBridgeRouter is Ownable, ReentrancyGuard {
     );
 
     /**
-     * @notice Issued when bridging an ERC20 token
+     * @notice Emitted when bridging an ERC20 token
      * @param tokenAddress Address of the ERC20 token contract
      * @param remoteBlockchainID ID of the remote chain
      * @param amount Amount of token bridged
@@ -115,7 +114,7 @@ contract TokenBridgeRouter is Ownable, ReentrancyGuard {
     );
 
     /**
-     * @notice Issued when bridging a native token
+     * @notice Emitted when bridging a native token
      * @param remoteChainID ID of the remote chain
      * @param amount Amount of token bridged
      * @param recipient Address of the receiver of the tokens
@@ -187,14 +186,14 @@ contract TokenBridgeRouter is Ownable, ReentrancyGuard {
      * @param remoteChainID ID of the remote chain
      * @param bridgeAddress Address of the remote bridge contract
      * @param requiredGasLimit Gas limit requirement for sending to a token bridge
-     * @param isMultihop True if this bridge is a multihop one
+     * @param isMultiHop True if this bridge is a multihop one
      */
     function registerRemoteTokenBridge(
         address tokenAddress,
         bytes32 remoteChainID,
         address bridgeAddress,
         uint256 requiredGasLimit,
-        bool isMultihop
+        bool isMultiHop
     ) external onlyOwner {
         require(
             tokenAddress.isContract() || tokenAddress == address(0),
@@ -207,7 +206,7 @@ contract TokenBridgeRouter is Ownable, ReentrancyGuard {
         RemoteBridge memory remoteBridge = RemoteBridge(
             bridgeAddress,
             requiredGasLimit,
-            isMultihop
+            isMultiHop
         );
         tokenRemoteChainToRemoteBridge[remoteChainID][
             tokenAddress
@@ -289,7 +288,7 @@ contract TokenBridgeRouter is Ownable, ReentrancyGuard {
             amount
         );
 
-        if (!remoteBridge.isMultihop) {
+        if (!remoteBridge.isMultiHop) {
             secondaryFeeAmount = 0;
         }
 
@@ -364,7 +363,7 @@ contract TokenBridgeRouter is Ownable, ReentrancyGuard {
             value: primaryFeeAmount
         }();
 
-        if (!remoteBridge.isMultihop) {
+        if (!remoteBridge.isMultiHop) {
             secondaryFeeAmount = 0;
         }
 
